@@ -1,0 +1,114 @@
+mysql> create schema company_management
+    -> ;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> create table company(
+    -> idcompany varchar(15) not null,
+    -> company_name varchar(45) null,
+    -> primary key(idcompany));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> desc company
+    -> ;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| idcompany    | varchar(15) | NO   | PRI | NULL    |       |
+| company_name | varchar(45) | YES  |     | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> alter table company add (phone varchar(16) null, email varchar(45) NULL, date_ins date NULL);
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc company
+    -> ;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| idcompany    | varchar(15) | NO   | PRI | NULL    |       |
+| company_name | varchar(45) | YES  |     | NULL    |       |
+| phone        | varchar(16) | YES  |     | NULL    |       |
+| email        | varchar(45) | YES  |     | NULL    |       |
+| date_ins     | date        | YES  |     | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql>  create table employee(idemployee varchar(16) NOT NULL,name varchar(45),surname varchar(45),badge varchar(5),FK_company varchar(16),date_ins date);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> 
+mysql> desc employee;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| idemployee | varchar(16) | NO   |     | NULL    |       |
+| name       | varchar(45) | YES  |     | NULL    |       |
+| surname    | varchar(45) | YES  |     | NULL    |       |
+| badge      | varchar(5)  | YES  |     | NULL    |       |
+| FK_company | varchar(16) | YES  |     | NULL    |       |
+| date_ins   | date        | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+6 rows in set (0.01 sec)
+
+mysql> alter table employee add index FK_company_idx (FK_company ASC);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+mysql> show index from employee
+    -> ;
++----------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table    | Non_unique | Key_name       | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++----------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| employee |          1 | FK_company_idx |            1 | FK_company  | A         |           0 |     NULL | NULL   | YES  | BTREE      |         |               |
++----------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+1 row in set (0.01 sec)
+
+
+mysql> alter table employee add constraint FK_company foreign key (FK_company) references company (idcompany) on delete no action on update no action;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show create table employee;
++----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table    | Create Table                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
++----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| employee | CREATE TABLE `employee` (
+  `idemployee` varchar(16) NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `surname` varchar(45) DEFAULT NULL,
+  `badge` varchar(5) DEFAULT NULL,
+  `FK_company` varchar(16) DEFAULT NULL,
+  `date_ins` date DEFAULT NULL,
+  KEY `FK_company_idx` (`FK_company`),
+  CONSTRAINT `FK_company` FOREIGN KEY (`FK_company`) REFERENCES `company` (`idcompany`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 |
++----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> 
+
+mysql> alter table employee add primary key(idemployee);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show create table employee;
++----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table    | Create Table                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
++----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| employee | CREATE TABLE `employee` (
+  `idemployee` varchar(16) NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `surname` varchar(45) DEFAULT NULL,
+  `badge` varchar(5) DEFAULT NULL,
+  `FK_company` varchar(16) DEFAULT NULL,
+  `date_ins` date DEFAULT NULL,
+  PRIMARY KEY (`idemployee`),
+  KEY `FK_company_idx` (`FK_company`),
+  CONSTRAINT `FK_company` FOREIGN KEY (`FK_company`) REFERENCES `company` (`idcompany`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 |
++----------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
